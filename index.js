@@ -34,9 +34,10 @@ app.use(
         originalError: { data, code },
       } = err;
       return {
-        response: message || "Oops, something went wrong",
-        status: code || 500,
-        stack: data,
+        code,
+        message,
+        result: {},
+        errors: data,
       };
     },
   })

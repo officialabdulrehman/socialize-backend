@@ -33,3 +33,32 @@ export const graphqlApiValidation = (req, next) => {
     throw error;
   }
 };
+
+const setPaginationURLs = (res, result) => {
+  if (
+    result.pagination &&
+    (result.pagination.next === "" || result.pagination.next)
+  ) {
+    const { pagination } = result;
+    const { page, perPage, hasNext, hasPrevious } = pagination;
+    const baseURL =
+      res.req?.protocol + "://" + res.req?.get("host") + res.req?.originalUrl;
+    const nextpage = `${baseURL}?page=${page + 1}&perPage=${perPage}`;
+    const prevpage = `${baseURL}?page=${page - 1}&perPage=${perPage}`;
+    pagination.next = null;
+    pagination.previous = null;
+    if (hasNext) pagination.next = nextpage;
+    if (hasPrevious) pagination.previous = prevpage;
+  }
+  return result;
+};
+
+export const response = async (res, result) => {
+  result = setPaginationURLs(res, result);
+  const response = {
+    message: "Success",
+    result: result,
+    errors: [],
+  };
+  res.status(200).json(response);
+};

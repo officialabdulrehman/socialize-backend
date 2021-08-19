@@ -1,8 +1,8 @@
-import jwt from 'jsonwebtoken'
-import { AUTH_HEADER, SERVER_SECRET } from "../utils/secrets"
+import jwt from "jsonwebtoken";
+import { AUTH_HEADER, SERVER_SECRET } from "../utils/secrets";
 
-export const authMiddleware = (req, res, next) => {
-  let decodedToken = null
+export const graphqlAuthMiddleware = (req, res, next) => {
+  let decodedToken = null;
   const authHeader = req.get(AUTH_HEADER);
   if (!authHeader) {
     req.isAuth = false;
@@ -12,7 +12,7 @@ export const authMiddleware = (req, res, next) => {
     const token = req.get(AUTH_HEADER).split(" ")[1];
     decodedToken = jwt.verify(token, SERVER_SECRET);
   } catch (err) {
-    console.log(err)
+    console.log(err);
     req.isAuth = false;
     return next();
   }
@@ -25,4 +25,4 @@ export const authMiddleware = (req, res, next) => {
   next();
 };
 
-export default authMiddleware
+export default graphqlAuthMiddleware;

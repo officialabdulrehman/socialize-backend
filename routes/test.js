@@ -3,7 +3,10 @@ import { check } from "express-validator";
 import { userDAO } from "../dao/userDAO";
 import { restApiValidation, response } from "../utils/helpers";
 import { checkParamId } from "../middlewares/commonMiddlewares";
-import { userSignupInputValidator } from "../middlewares/userInputMiddlewares";
+import {
+  userSignupInputValidator,
+  emailValidator,
+} from "../middlewares/userInputMiddlewares";
 
 export const testRouter = Router();
 export default testRouter;
@@ -41,5 +44,19 @@ testRouter.delete("/test/:id", [...checkParamId], async (req, res, next) => {
   if (!restApiValidation(req, next)) return next();
   const id = String(req.params.id);
   const result = await userDAO.delete(id);
+  response(res, result);
+});
+
+testRouter.post("/test/user", [...emailValidator], async (req, res, next) => {
+  const { email } = req.body;
+  const result = await userDAO.findByEmail(email);
+  if (result.length <= 0) {
+    const error = new Error("Failure");
+    error.data = [
+      { message: `Record with email ${email} not found.`, param: "email" },
+    ];
+    error.code = 404;
+    return next(error);
+  }
   response(res, result);
 });

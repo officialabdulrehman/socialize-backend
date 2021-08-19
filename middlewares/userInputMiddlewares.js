@@ -1,7 +1,7 @@
 import { check } from "express-validator";
 
 export const userSignupInputValidator = [
-  check("name", "Please enter a valid email").isEmail().normalizeEmail(),
+  check("email", "Please enter a valid email").isEmail().normalizeEmail(),
   check("password", "Password must contain at least 8 characters")
     .trim()
     .isLength({ min: 8 }),
@@ -16,4 +16,11 @@ export const userSignupInputValidator = [
   check("name", "Name must contain at least 3 - 100 characters")
     .trim()
     .isLength({ min: 3, max: 100 }),
+];
+
+export const emailValidator = [
+  check("email", "Please enter a valid email")
+    .trim()
+    .isEmail()
+    .normalizeEmail(),
 ];
